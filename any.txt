@@ -1,0 +1,1 @@
+{% url 'media/recipes/recipe.image' %}

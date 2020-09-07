@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Рецепты</title>
     {% load static %}
+    {% load cache %}
+    {% load thumbnail %}
     <link rel="stylesheet" href={% static 'pages/index.css' %}>
 </head>
 <body class="body">
@@ -29,19 +31,22 @@
                 </li>
             </ul>
         </div>
+    {% cache 6 index_page %}
+    
         <div class="card-list">
+            {% for recipe in page %}
         <div class="card" data-id="120">
-            <img src="{% static 'images/testCardImg.png' %}" alt="какой-то текст" class="single-card__image">
+            <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
             <div class="card__body">
-                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
                 <ul class="card__items">
                     <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
                     <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
                     <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
                 </ul>
                 <div class="card__items card__items_column">
-                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
-                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                    <p class="card__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="{% url 'recipes:profile' recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a></p>
                 </div>
             </div>
             <div class="card__footer">
@@ -49,11 +54,14 @@
                 <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
             </div>
         </div>
+    {% endfor %}
+    {% endcache %}
         
     </div>
-    {% include 'paginator.html' %}
+    {% include 'paginator.html' %} 
     </main>
     {% include 'footer.html' %}
+    <script src="{% static 'js/config/config.js' %}"></script>
     {% if user.is_authenticated %}
     <script src="{% static 'js/components/MainCards.js' %}"></script>
 

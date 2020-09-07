@@ -11,22 +11,48 @@
     </head>
 <body class="body">
 {% include 'header.html' %}
+{% load user_filters %}
 <main class="main container">
     <div class="main__header">
         <h1 class="main__title">Редактирование рецепта</h1>
     </div>
     <div class="form-container">
-        <form class="form" method="post" enctype="multipart/form-data" id="main-form">
+        <form class="form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form__group">
-                <label for="id_name" class="form__label">Название рецепта</label>
+                <label for="{{ form.name.id_for_label }}" class="form__label">Название рецепта</label>
                 <div class="form__field-group">
-                    <input type="email" id="id_name" name="name" class="form__input">
+                    {{ form.title|addclass:"form__input" }}
+                    {% if form.errors %}
+                        {% for error in field.errors %}
+                            <span class="form__error">{{ error|escape }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="form__group">
+                {% csrf_token %}
+                <p class="form__label">Теги</p>
+                <div class="form__field-group">
+                    <div class="tags">
+                        <div class="tags__item">
+                            <input type="checkbox" name="breakfast" id="id_breakfast" class="tags__checkbox tags__checkbox_style_orange">
+                            <label for="id_breakfast" class="tags__label">Завтрак</label>
+                        </div>
+                        <div class="tags__item">
+                            <input type="checkbox" name="lunch" id="id_lunch" class="tags__checkbox tags__checkbox_style_green" checked>
+                            <label for="id_lunch" class="tags__label">Обед</label>
+                        </div>
+                        <div class="tags__item">
+                            <input type="checkbox" name="dinner" id="id_dinner" class="tags__checkbox tags__checkbox_style_purple" checked>
+                            <label for="id_dinner" class="tags__label">Ужин</label>
+                        </div>
+                    </div>
                     <span class="form__error"></span>
                 </div>
             </div>
-            {% include 'tags.html' %}
             <div class="form__group">
+                {% csrf_token %}
                 <label for="nameIngredient" class="form__label">Ингредиенты</label>
                 <div class="form__field-group">
                     <div class="form__field-group-ingredientes">
@@ -42,30 +68,41 @@
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_time" class="form__label">Время приготовления</label>
+                <label for="{{ form.cooking_time.id_for_label }}" class="form__label">Время приготовления</label>
                 <div class="form__field-group form__field-group_time">
-                    <input type="text" id="id_time" name="name" class="form__input">
+                    {{ form.duration|addclass:"form__input" }}
                     <label for="id_time" class="form__label">минут</label>
-                    <span class="form__error"></span>
+                    {% if form.errors %}
+                        {% for error in field.errors %}
+                            <span class="form__error">{{ error|escape }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
-                <label for="id_description" class="form__label">Описание</label>
+                <label for="{{ form.text.id_for_label }}" class="form__label">Описание</label>
                 <div class="form__field-group">
-                    <textarea name="description" id="id_description" rows="8" class="form__textarea"></textarea>
-                    <span class="form__error"></span>
+                    {{ form.description|addclass:"form__textarea" }}
+                    {% if form.errors %}
+                        {% for error in field.errors %}
+                            <span class="form__error">{{ error|escape }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__group">
                 <span class="form__label">Загрузить фото</span>
                 <div class="form__field-group">
-                    <label for="id_file" class="form__file-button">Выбрать файл</label>
-                    <input type="file" class="form__file" name="file" id="id_file">
-                    <span class="form__error"></span>
+                    {{ form.image|addclass:"form__file-button" }}
+                    {% if form.errors %}
+                        {% for error in field.errors %}
+                            <span class="form__error">{{ error|escape }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="form__footer">
-                <button class="button button_style_blue">Создать рецепт</button>
+                <button class="button button_style_blue">Сохранить рецепт</button>
             </div>
         </form>
     </div>
