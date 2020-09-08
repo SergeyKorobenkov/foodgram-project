@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Recipe, Tag, Ingrindient, Amount
+from .models import Recipe, Tag, Ingrindient, Amount, Follow, Favors
 
 
 class AmountInLine(admin.TabularInline):
@@ -31,10 +31,23 @@ class IngreientAdmin(admin.ModelAdmin):
 
 
 class AmountAdmin(admin.ModelAdmin):
-    fields = ('ingrindient', 'recipe', 'amount',)
+    fields = ('ingrindient', 'recipe', 'units',)
     search_fields = ('ingrindient', 'recipe',)
+
+
+class FollowAdmin(admin.ModelAdmin):
+    list_display = ('user', 'author')
+    fields = ('user', 'author')
+
+
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = ('user', 'recipe')
+    fields = ('user', 'recipe')
+
 
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Ingrindient, IngreientAdmin)
 admin.site.register(Amount, AmountAdmin)
+admin.site.register(Follow, FollowAdmin)
+admin.site.register(Favors, FavoritesAdmin)

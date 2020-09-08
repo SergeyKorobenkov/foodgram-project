@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Избранное</title>
     {% load static %}
+    {% load cache %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
 <body class="body">
@@ -31,64 +32,31 @@
             </ul>
 
         </div>
+        {% cache 6 index_page %}
+    
         <div class="card-list">
-            <div class="card" data-id="123">
-                <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
-                <div class="card__body">
-                    <a class="card__title link" href="#" target="_blank">Французские тосты</a>
-                    <ul class="card__items">
-                        <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-                        <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                        <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-                    </ul>
-                    <div class="card__items card__items_column">
-                        <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
-                        <p class="card__text"><span class="icon-user"></span> Вероника Чернова</p>
-                    </div>
-                </div>
-                <div class="card__footer">
-                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            {% for recipe in recipe_list %}
+        <div class="card" data-id="120">
+            <a href="{% url 'recipes:recipe_view' recipe.recipe.author.username recipe.recipe.id %}" class="link" target="_blank"><img src="{{ recipe.recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.recipe.author.username recipe.recipe.id %}" target="_blank"> {{ recipe.recipe.title }}</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> {{ recipe.recipe.duration }} мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="{% url 'recipes:profile' recipe.recipe.author.username %}" style="color: black">{{ recipe.recipe.author.first_name }} {{ recipe.recipe.author.last_name }}</a></p>
                 </div>
             </div>
-            <div class="card" data-id="1241">
-                <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
-                <div class="card__body">
-                    <a class="card__title link" href="#" target="_blank">Французские тосты</a>
-                    <ul class="card__items">
-                        <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-                        <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                        <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-                    </ul>
-                    <div class="card__items card__items_column">
-                        <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
-                        <p class="card__text"><span class="icon-user"></span> Вероника Чернова</p>
-                    </div>
-                </div>
-                <div class="card__footer">
-                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
             </div>
-            <div class="card" data-id="1124">
-                <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
-                <div class="card__body">
-                    <a class="card__title link" href="#" target="_blank">Французские тосты</a>
-                    <ul class="card__items">
-                        <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
-                        <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                        <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
-                    </ul>
-                    <div class="card__items card__items_column">
-                        <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
-                        <p class="card__text"><span class="icon-user"></span> Вероника Чернова</p>
-                    </div>
-                </div>
-                <div class="card__footer">
-                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                </div>
-            </div>
+        </div>
+    {% endfor %}
+    {% endcache %}
         </div>
         {% include 'paginator.html' %}
     </main>

@@ -9,7 +9,11 @@ class Tag(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True)
 
+    def __str__(self):
+       return self.slug
 
+# Правильное название должно быть "Ingredient", но я уже и так много интима с этой моделью получил.
+# Пусть останется так.
 class Ingrindient(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     dimension = models.CharField(max_length=10, null=True, blank=True)
@@ -39,11 +43,22 @@ class Amount(models.Model):
     ingrindient = models.ForeignKey(Ingrindient, on_delete=models.CASCADE, related_name='ingrindient')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.ingrindient.dimension
 
 
-#class Follow(models.Model):
-    #user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower') #тот который подписывается
-    #author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following') #тот на которого подписываются#
 
-#    def __str__(self):
-#       return self.text
+class Follow(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower') # тот который подписывается
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following') # тот на которого подписываются
+
+    def __str__(self):
+       return self.user.username
+
+
+class Favors(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favor_by') # кто сохраняет
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favor') # что сохраняет
+    
+    def __str__(self):
+       return self.recipe.title

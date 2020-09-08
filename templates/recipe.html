@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Французские тосты</title>
+    <title>{{ recipe.title }}</title>
     {% load static %}
     <link rel="stylesheet" href={% static 'pages/single.css' %}>
 </head>
@@ -13,7 +13,7 @@
     {% include 'header.html' %}
     <main class="main container">
         <div class="single-card" data-id="371">
-            <img src="{% static 'images/testCardImg.png' %}" alt="Бройлер" class="card__image"></a>
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="single-card__image"></a>
             <div class="single-card__info">
                 <div class="single-card__header-info">
                     <h1 class="single-card__title"> {{ recipe.title }} </h1>
@@ -41,7 +41,7 @@
                     <li class="single-card__item"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></li>
                 </ul>
                 <div class="single-card__section">
-                    <h3 class="single-card__section-title">Ингридиенты:</h3>
+                    <h3 class="single-card__section-title">Ингредиенты:</h3>
                     <div class="single-card__items single-card__items_column">
                         {% for amount in recipe.amount_set.all %}
                         <p class=" single-card__section-item">{{ amount.ingrindient.name }} - {{ amount.units }} {{ amount.ingrindient.dimension }}</p>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Мои подписки</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
+</head>
+<body class="body">
+{% include 'header.html' %}
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Мои подписки</h1>
+    </div>
+        {% for item in subs_list %}
+        <div class="card-user" data-id="7091">
+            <div class="card-user__header">
+                <h2 class="card-user__title"> {{ author.recipe_author.first_name }} Чернова</h2>
+            </div>
+            <div class="card-user__body">
+                <ul class="card-user__items">
+                    <li class="card-user__item">
+                        <div class="recipe">
+                            <img src="{{ recipe.recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
+                            <h3 class="recipe__title">{{ recipe.title }}</h3>
+                            <p class="recipe__text"><span class="icon-time"></span> {{ follow.recipe.duration }} мин.</p>
+                        </div>
+                    </li>
+                    <li class="card-user__item">
+                        <div class="recipe">
+                            <img src="{{ recipe.recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
+                            <h3 class="recipe__title">{{ follow.recipe.title }}</h3>
+                            <p class="recipe__text"><span class="icon-time"></span> {{ follow.recipe.duration }} мин.</p>
+                        </div>
+                    </li>
+                    <li class="card-user__item">
+                        <div class="recipe">
+                            <img src="{{ recipe.recipe.image.url }}" alt="{{ recipe.name }}" class="recipe__image">
+                            <h3 class="recipe__title">{{ follow.recipe.title }}</h3>
+                            <p class="recipe__text"><span class="icon-time"></span> {{ follow.recipe.duration }} мин.</p>
+                        </div>
+                    </li>
+                    <li class="card-user__item">
+                        <a href="#" class="card-user__link link">Еще 7 рецептов...</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-user__footer">
+                <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Отписаться</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% include 'paginator.html' %}
+</main>
+{% include 'footer.html' %}
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/components/MyFollow.js' %}"></script>
+<script src="{% static 'js/components/Subscribe.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'myFollow.js' %}"></script>
+
+</body>
+</html>
