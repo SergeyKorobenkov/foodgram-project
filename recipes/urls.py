@@ -10,7 +10,7 @@ urlpatterns = [
     path("recipe/<username>/", views.profile, name='profile'), # профиль пользователя
     path("subs/<username>/", views.subs_view, name='subs'), # просмотр подписок
     path('favors/<username>/', views.favors_view, name='favors'), # просмотр избранных рецептов
-    path('shop/<username>/', views.shop_list, name='shop'), # просмотр листа покупок
+    path('shop', views.shop, name='shop'), # просмотр листа покупок
 
     path('new-recipe/', views.new_recipe, name='new_recipe'), # добавление нового рецепта
     path('recipe/<int:recipe_id>/edit/', views.recipe_edit, name='recipe_edit'), # редактирование рецепта
@@ -23,8 +23,8 @@ urlpatterns = [
     path('api/favorites/<int:recipe_id>', views.Favorites.as_view(), name='remove_favor'), # удаление рецепта из избранного
     path('api/subscriptions', views.Subscription.as_view(), name='add_subs'), # запрос на добавление подписки к автору
     path('api/subscriptions/<int:recipe_id>', views.Subscription.as_view(), name='remove_subs'), # запрос на удаление подписки
-    path('api/purchases/', views.Purchases.as_view(), name='add_to_shop'), # добавление в список покупок
-    path('api/purchases/<int:recipe_id>/', views.Purchases.as_view(), name='remove_from_shop'), # удаление из списка покупок
+    path('api/purchases', views.Purchases.as_view(), name='add_to_shop'), # добавление в список покупок
+    path('api/purchases/<int:recipe_id>', views.Purchases.as_view(), name='remove_from_shop'), # удаление из списка покупок
 
 
 ]

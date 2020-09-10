@@ -51,11 +51,18 @@
                 </div>
             </div>
             <div class="card__footer">
-                <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                {% if recipe.title in favor_list %}
-                    <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+                {% if recipe.id in shop_list %}
+                    <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
                 {% else %}
-                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                {% endif %}
+                
+                {% if user.is_authenticated %}
+                    {% if recipe.title in favor_list %}
+                        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+                    {% else %}
+                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>
@@ -70,21 +77,21 @@
     {% if user.is_authenticated %}
     <script src="{% static 'js/components/MainCards.js' %}"></script>
 
-  <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
-  <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
 
-  <script src="{% static 'js/components/CardList.js' %}"></script>
-  <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/CardList.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
 
-  <script src="{% static 'js/api/Api.js' %}"></script>
-  <script src="{% static 'indexAuth.js' %}"></script>
-  {% else %}
-  <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'indexAuth.js' %}"></script>
+    {% else %}
+    <script src="{% static 'js/components/MainCards.js' %}"></script>
     <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
 
     <script src="{% static 'js/components/CardList.js' %}"></script>
     <script src="{% static 'js/components/Header.js' %}"></script>
-  
+    
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'indexNotAuth.js' %}"></script>
     {% endif %}
