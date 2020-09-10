@@ -8,6 +8,7 @@
     <title>Рецепты</title>
     {% load static %}
     {% load cache %}
+    {% csrf_token %}
     {% load thumbnail %}
     <link rel="stylesheet" href={% static 'pages/index.css' %}>
 </head>
@@ -35,7 +36,7 @@
     
         <div class="card-list">
             {% for recipe in page %}
-        <div class="card" data-id="120">
+        <div class="card" data-id="{{ recipe.id }}">
             <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
@@ -51,7 +52,11 @@
             </div>
             <div class="card__footer">
                 <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                {% if recipe.title in favor_list %}
+                    <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+                {% else %}
+                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                {% endif %}
             </div>
         </div>
     {% endfor %}

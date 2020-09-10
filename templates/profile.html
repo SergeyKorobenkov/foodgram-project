@@ -8,6 +8,7 @@
     <title>Рецепты</title>
     {% load static %}
     {% load cache %}
+    {% csrf_token %}
     {% load thumbnail %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
 </head>
@@ -33,13 +34,20 @@
 
         </div>
         {% if user.is_authenticated %}
-        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>
+        <div class="author-subscribe" data-author="{{ profile.id }}">
+        {% if follow %}
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></p>
+        {% else %}
+            <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button></p>
+        {% endif %}
+        </div>
+        
         {% endif %}
         {% cache 6 index_page %}
     
         <div class="card-list">
             {% for recipe in recipe_list %}
-        <div class="card" data-id="120">
+        <div class="card" data-id="{{ recipe.id }}">
             <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
@@ -55,23 +63,30 @@
             </div>
             <div class="card__footer">
                 <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                {% if recipe.title in favor_list %}
+                    <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+                {% else %}
+                    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+                {% endif %}
             </div>
         </div>
-    {% endfor %}
+        {% endfor %}
     {% endcache %}
     </div>
         {% include 'paginator.html' %}
     </main>
     {% include 'footer.html' %}
+    <script src="{% static 'js/config/config.js' %}"></script>
     <script src="{% static 'js/components/MainCards.js' %}"></script>
+    <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
+    <script src="{% static 'js/components/Subscribe.js' %}"></script>
+    <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
+    <script src="{% static 'js/components/Favorites.js' %}"></script>
+    <script src="{% static 'js/components/CardList.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
 
-  <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
-  <script src="{% static 'js/components/Favorites.js' %}"></script>
-  <script src="{% static 'js/components/CardList.js' %}"></script>
-  <script src="{% static 'js/components/Header.js' %}"></script>
-
-  <script src="{% static 'js/api/Api.js' %}"></script>
-  <script src="{% static 'indexAuth.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'authorRecipe.js' %}"></script>
+    <script src="{% static 'indexAuth.js' %}"></script>
 </body>
 </html>

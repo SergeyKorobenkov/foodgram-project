@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Мои подписки</title>
     {% load static %}
+    {% csrf_token %}
     <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
 </head>
 <body class="body">
@@ -15,10 +16,11 @@
     <div class="main__header">
         <h1 class="main__title">Мои подписки</h1>
     </div>
+    <div class="card-list">
         {% for item in subs_list %}
-        <div class="card-user" data-id="7091">
+        <div class="card-user" data-id="{{ item.author.id }}">
             <div class="card-user__header">
-                <h2 class="card-user__title"> {{ author.recipe_author.first_name }} Чернова</h2>
+                <h2 class="card-user__title"> {{ item.author.first_name }} Чернова</h2>
             </div>
             <div class="card-user__body">
                 <ul class="card-user__items">
@@ -49,7 +51,7 @@
                 </ul>
             </div>
             <div class="card-user__footer">
-                <button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Отписаться</button>
+                <button class="button button_style_light-blue button_size_auto" name="subscribe">Отписаться</button>
             </div>
         </div>
         {% endfor %}

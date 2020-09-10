@@ -19,10 +19,10 @@ urlpatterns = [
 
     # Блок с ебучим js
     path('api/ingredients/', views.Ingrindients.as_view(), name='ingredients'), # запрос на урл для автозаполнения поля ингридиентов
-    path('api/favorites/', views.Favorites.as_view(), name='add_favor'), # запрос по апи для добавления рецепта в избранное
-    path('api/favorites/<int:recipe_id>/', views.Favorites.as_view(), name='remove_favor'), # удаление рецепта из избранного
-    path('api/subscriptions/', views.Subscription.as_view(), name='add_subs'), # запрос на добавление подписки к автору
-    path('api/subscriptions/${id}/', views.Subscription.as_view(), name='remove_subs'), # запрос на удаление подписки
+    path('api/favorites', views.Favorites.as_view(), name='add_favor'), # запрос по апи для добавления рецепта в избранное
+    path('api/favorites/<int:recipe_id>', views.Favorites.as_view(), name='remove_favor'), # удаление рецепта из избранного
+    path('api/subscriptions', views.Subscription.as_view(), name='add_subs'), # запрос на добавление подписки к автору
+    path('api/subscriptions/<int:recipe_id>', views.Subscription.as_view(), name='remove_subs'), # запрос на удаление подписки
     path('api/purchases/', views.Purchases.as_view(), name='add_to_shop'), # добавление в список покупок
     path('api/purchases/<int:recipe_id>/', views.Purchases.as_view(), name='remove_from_shop'), # удаление из списка покупок
 
