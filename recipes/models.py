@@ -6,11 +6,12 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100, unique=True)
+    value = models.CharField('Значение', max_length=255)
+    style = models.CharField('Префикс для стиля шаблона', max_length=255, null=True)
+    name = models.CharField('Имя тега в шаблоне', max_length=255, null=True)
 
     def __str__(self):
-       return self.slug
+       return self.name
 
 # Правильное название должно быть "Ingredient", но я уже и так много интима с этой моделью получил.
 # Пусть останется так.
@@ -26,12 +27,12 @@ class Recipe(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название рецепта')
     ingrindient = models.ManyToManyField(Ingrindient, through="Amount", through_fields=('recipe', 'ingrindient'))
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipe_author")
-    #tag = models.ManyToManyField(Tag, related_name='tag')
+    tag = models.ManyToManyField(Tag)
     duration = models.IntegerField(default=1, verbose_name='Время приготовления')
     description = models.TextField()
     image = models.ImageField(upload_to='recipes/', blank=True, null=True)
     pub_date = models.DateTimeField("date published", auto_now_add=True)
-    slug = models.SlugField(null=True, blank=True)
+    slug = models.SlugField()
     
     
     def __str__(self):
@@ -60,5 +61,13 @@ class Favors(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favor_by') # кто сохраняет
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, related_name='favor') # что сохраняет
     
+    def __str__(self):
+       return self.recipe.title
+
+
+class ShopList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='buyer')
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
     def __str__(self):
        return self.recipe.title

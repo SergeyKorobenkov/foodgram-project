@@ -1,3 +1,5 @@
-страница профиля
-страница рецепта
-страница избранного 
+|addclass:"form__input" 
+
+|addclass:"form__textarea"
+
+|addclass:"form__file-button"

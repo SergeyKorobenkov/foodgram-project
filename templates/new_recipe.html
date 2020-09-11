@@ -27,24 +27,23 @@
             </div>
         </div>
         <div class="form__group">
-            {% csrf_token %}
             <p class="form__label">Теги</p>
             <div class="form__field-group">
+                
                 <div class="tags">
-                    <div class="tags__item">
-                        <input type="checkbox" name="breakfast" id="id_breakfast" class="tags__checkbox tags__checkbox_style_orange">
-                        <label for="id_breakfast" class="tags__label">Завтрак</label>
-                    </div>
-                    <div class="tags__item">
-                        <input type="checkbox" name="lunch" id="id_lunch" class="tags__checkbox tags__checkbox_style_green" checked>
-                        <label for="id_lunch" class="tags__label">Обед</label>
-                    </div>
-                    <div class="tags__item">
-                        <input type="checkbox" name="dinner" id="id_dinner" class="tags__checkbox tags__checkbox_style_purple" checked>
-                        <label for="id_dinner" class="tags__label">Ужин</label>
-                    </div>
+                    {% for tag_choice, tag_value in form.tags.field.choices %}
+                        <div class="tags__item">
+                            <input 
+                                type="checkbox" 
+                                name="tags" 
+                                value = "{{ tag_choice.instance.pk }}"
+                                id="id_{{ tag_choice.instance.value }}" 
+                                class="tags__checkbox tags__checkbox_style_{{ tag_choice.instance.style }}">
+                            <label for="id_{{ tag_choice.instance.value }}" class="tags__label">{{ tag_choice.instance.name }}</label>
+                        </div>
+                    {% endfor %}
                 </div>
-                <span class="form__error"></span>
+                <span class="form__error"> {{ form.tags.error }}</span>
             </div>
         </div>
         <div class="form__group">
@@ -59,6 +58,8 @@
                     <input type="number" id="cantidad" class="form__input" min="0">
                     <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                 </div>
+                <div class="form__field-group-ingredientes-container"></div>
+                
                 <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                 <span class="form__error"></span>
             </div>

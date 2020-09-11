@@ -1,12 +1,13 @@
 from django import forms
 from .models import Recipe
-from django.forms import ModelForm
+from django.forms import ModelForm, CheckboxSelectMultiple
 
 
 class RecipeForm(ModelForm):
+    
     class Meta:
         model = Recipe
-        fields = ('title', 'duration', 'description', 'image',)
-        required = {'title':True, }
-        
-        
+        fields = ('title', 'tag', 'duration', 'description', 'image',)
+        widgets = {
+            'tags': CheckboxSelectMultiple(),
+        }        

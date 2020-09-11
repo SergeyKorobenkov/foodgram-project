@@ -1,17 +1,17 @@
 import json
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, HttpResponse
 from django.views.generic import View
 from django.core.cache import cache
 from django.template.response import TemplateResponse
 from django.conf import settings
 
-from .models import Recipe, Tag, Ingrindient, Amount, User, Follow, Favors
+from .models import Recipe, Tag, Ingrindient, Amount, User, Follow, Favors, ShopList
 from .forms import RecipeForm
+from .utils import generate_shop_list
 
 
 # Отображение главной страницы
@@ -24,9 +24,10 @@ def index(request):
     page = paginator.get_page(page_number)
     cache.clear()
     
-    shop_list = [] # кусок для изменения кнопки добавленности в список покупок
-    for item in request.session['shopping_list']:
-        shop_list.append(int(item))
+    pre_shop_list = ShopList.objects.filter(user=request.user).all() # кусок для изменения кнопки добавленности в список покупок
+    shop_list = []
+    for item in pre_shop_list:
+        shop_list.append(item.recipe.id)
     
     if request.user.is_authenticated: # без этого не работает либо звездочка, либо сайт
         # дальше идет костыль
@@ -113,9 +114,10 @@ def recipe_view(request, recipe_id, username):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     profile = get_object_or_404(User, username=username)
     
-    shop_list = [] # кусок для изменения кнопки добавленности в список покупок
-    for item in request.session['shopping_list']:
-        shop_list.append(int(item))
+    pre_shop_list = ShopList.objects.filter(user=request.user).all() # кусок для изменения кнопки добавленности в список покупок
+    shop_list = []
+    for item in pre_shop_list:
+        shop_list.append(item.recipe.id)
     
     if request.user.is_authenticated: # без этого не работает либо звездочка, либо сайт
         # ну да, это тоже костыль, и что теперь?
@@ -152,9 +154,10 @@ def profile(request, username):
     page = paginator.get_page(page_number)
     cache.clear()
     
-    shop_list = [] # кусок для изменения кнопки добавленности в список покупок
-    for item in request.session['shopping_list']:
-        shop_list.append(int(item))
+    pre_shop_list = ShopList.objects.filter(user=request.user).all() # кусок для изменения кнопки добавленности в список покупок
+    shop_list = []
+    for item in pre_shop_list:
+        shop_list.append(item.recipe.id)
     
     if request.user.is_authenticated: # без этого не работает либо звездочка, либо сайт
         # дальше идет костыль
@@ -212,23 +215,20 @@ class Favorites(View):
 class Purchases(View):
     def post(self, request):
         recipe_id = json.loads(request.body)['id']
+        recipe = Recipe.objects.get(id=recipe_id)
+        is_shop = ShopList.objects.filter(user=request.user).filter(recipe=recipe_id)
 
-        if 'shopping_list' in request.session:
-            shopping_list = request.session['shopping_list']
-
-            if not recipe_id in shopping_list:
-                shopping_list.append(recipe_id)
-                request.session['shopping_list'] = shopping_list
+        if is_shop:
+            return JsonResponse({'recipe_id':'recipe'})
 
         else:
-            request.session['shopping_list'] = [recipe_id]    
-            
-        return JsonResponse({'succes':'True'})
+            ShopList.objects.create(user=request.user, recipe=recipe)
+            print()
+            return JsonResponse({'recipe_id':'recipe'})
 
     def delete(self, request, recipe_id):
-        shopping_list = request.session['shopping_list']
-        shopping_list.remove(str(recipe_id))
-        request.session['shopping_list'] = shopping_list
+        recipe = Recipe.objects.get(id=recipe_id)
+        ShopList.objects.filter(user=request.user).filter(recipe=recipe).delete()
         return JsonResponse({'succes':'True'})
 
 
@@ -266,9 +266,10 @@ def favors_view(request, username):
     page = paginator.get_page(page_number)
     cache.clear()
     
-    shop_list = [] # кусок для изменения кнопки добавленности в список покупок
-    for item in request.session['shopping_list']:
-        shop_list.append(int(item))
+    pre_shop_list = ShopList.objects.filter(user=request.user).all() # кусок для изменения кнопки добавленности в список покупок
+    shop_list = []
+    for item in pre_shop_list:
+        shop_list.append(item.recipe.id)
     
 
     # дальше идет костыль, но по другому не работает =(
@@ -307,17 +308,17 @@ def subs_view(request, username):
 # Просмотр списка покупок
 
 def shop(request):
-    recipes_to_shop = request.session['shopping_list']
-    shop_list = []
-    
-    for item in recipes_to_shop:
-        x = Recipe.objects.get(id=int(item))
-        shop_list.append(x)
+    shop_list = ShopList.objects.filter(user=request.user).all()
     return render(request, 'shopList.html', {'shop_list':shop_list})
 
 
-# пока непонятно на кой хер мне эта шляпа, все равно не работает
-def header_counter(request, template_name='header.html'):
-    recipes_to_shop = request.session['shopping_list']
-    count = str(len(recipes_to_shop))
-    return TemplateResponse(request, 'header.html', {'count':count})
+# скачивание списка покупок
+
+@login_required
+def download(request):
+    result = generate_shop_list(request) # вызов скрипта на составление файла
+    filename = 'ingredients.txt' # именуем файл
+    response = HttpResponse(result, content_type='text/plain') # наполняем и отдаем
+    response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
+    return response
+    

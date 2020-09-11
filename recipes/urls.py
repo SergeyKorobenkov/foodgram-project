@@ -11,14 +11,15 @@ urlpatterns = [
     path("subs/<username>/", views.subs_view, name='subs'), # просмотр подписок
     path('favors/<username>/', views.favors_view, name='favors'), # просмотр избранных рецептов
     path('shop', views.shop, name='shop'), # просмотр листа покупок
+    path('download', views.download, name='download'), # скачивание списка покупок
 
-    path('new-recipe/', views.new_recipe, name='new_recipe'), # добавление нового рецепта
-    path('recipe/<int:recipe_id>/edit/', views.recipe_edit, name='recipe_edit'), # редактирование рецепта
+    path('new-recipe', views.new_recipe, name='new_recipe'), # добавление нового рецепта
+    path('recipe/<int:recipe_id>/edit', views.recipe_edit, name='recipe_edit'), # редактирование рецепта
     path('recipe/<int:recipe_id>/delete', views.recipe_delete, name='recipe_delete'), # удаление рецепта
     path('recipe/<username>/<int:recipe_id>/', views.recipe_view, name='recipe_view'), # просмотр рецепта
 
     # Блок с ебучим js
-    path('api/ingredients/', views.Ingrindients.as_view(), name='ingredients'), # запрос на урл для автозаполнения поля ингридиентов
+    path('api/ingredients', views.Ingrindients.as_view(), name='ingredients'), # запрос на урл для автозаполнения поля ингридиентов
     path('api/favorites', views.Favorites.as_view(), name='add_favor'), # запрос по апи для добавления рецепта в избранное
     path('api/favorites/<int:recipe_id>', views.Favorites.as_view(), name='remove_favor'), # удаление рецепта из избранного
     path('api/subscriptions', views.Subscription.as_view(), name='add_subs'), # запрос на добавление подписки к автору
@@ -28,7 +29,3 @@ urlpatterns = [
 
 
 ]
-
-
-# {% url 'recipes:recipe_view' recipe.author.username recipe.id %}
-# {% url 'recipes:profile' recipe.author.username %}

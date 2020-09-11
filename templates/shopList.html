@@ -19,18 +19,18 @@
     <div class="card-list card-list_column">
         <ul class="shopping-list">
             {% for recipe in shop_list %}
-            <li class="shopping-list__item" data-id="111">
+            <li class="shopping-list__item" data-id="{{ recipe.recipe.id }}">
                 <div class="recipe recipe_reverse">
-                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe__image recipe__image_big">
-                    <h3 class="recipe__title">{{ recipe.title }}</h3>
-                    <p class="recipe__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
+                    <img src="{{ recipe.recipe.image.url }}" alt="{{ recipe.recipe.title }}" class="recipe__image recipe__image_big">
+                    <h3 class="recipe__title">{{ recipe.recipe.title }}</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> {{ recipe.recipe.duration }} мин.</p>
                 </div>
-                <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="shopping-list__button link">Удалить</a>
+                <a href="{% url 'recipes:recipe_view' recipe.recipe.author.username recipe.recipe.id %}" class="shopping-list__button link">Удалить</a>
             </li>
             {% endfor %}
             
         </ul>
-        <button class="button button_style_blue">Скачать список</button>
+        <a href="{% url 'recipes:download' %}"> Скачать список </a>
 
 
     </div>
