@@ -20,7 +20,7 @@
                     <h1 class="single-card__title"> {{ recipe.title }} </h1>
                     <div class="single-card__favorite">
                         {% if user.is_authenticated %}
-                            {% if favor %}
+                            {% if recipe.title in favor_list %}
                                 <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
                             {% else %}
                                 <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
@@ -32,9 +32,11 @@
     
 
                 <ul class="single-card__items">
-                    <li class="single-card__item"><span class="badge badge_style_green">Обед</span></li>
-                    <li class="single-card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                    <li class="single-card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                    <ul class="card__items">
+                        {% for tag in recipe.tag.all %}
+                        <span class="badge badge_style_{{ tag.style }}">{{ tag.name }}</span></li>
+                        {% endfor %}
+                    </ul>
                 </ul>
                 <div class="single-card__items single-card__items_column">
                     <p class="single-card__text"><span class="icon-time"></span> {{recipe.duration}} мин.</p>
@@ -46,10 +48,12 @@
                     </ul>
                 </div>
                 <ul class="single-card__items">
+                    {% if user.is_authenticated %}
                     {% if recipe.id in shop_list %}
                     <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
                     {% else %}
                     <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                    {% endif %}
                     {% endif %}
                     {% if user.username != profile.username %}
                     {% if user.is_authenticated %}

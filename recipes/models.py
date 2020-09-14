@@ -30,7 +30,7 @@ class Recipe(models.Model):
     tag = models.ManyToManyField(Tag)
     duration = models.IntegerField(default=1, verbose_name='Время приготовления')
     description = models.TextField()
-    image = models.ImageField(upload_to='recipes/', blank=True, null=True)
+    image = models.ImageField(upload_to='recipes/')
     pub_date = models.DateTimeField("date published", auto_now_add=True)
     slug = models.SlugField()
     

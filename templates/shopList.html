@@ -25,7 +25,7 @@
                     <h3 class="recipe__title">{{ recipe.recipe.title }}</h3>
                     <p class="recipe__text"><span class="icon-time"></span> {{ recipe.recipe.duration }} мин.</p>
                 </div>
-                <a href="{% url 'recipes:recipe_view' recipe.recipe.author.username recipe.recipe.id %}" class="shopping-list__button link">Удалить</a>
+                <a  class="shopping-list__button link">Удалить</a>
             </li>
             {% endfor %}
             

@@ -1,5 +1,0 @@
-|addclass:"form__input" 
-
-|addclass:"form__textarea"
-
-|addclass:"form__file-button"

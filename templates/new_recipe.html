@@ -20,7 +20,7 @@
             <div class="form__field-group">
                 {{ form.title|addclass:"form__input" }}
                 {% if form.errors %}
-                    {% for error in field.errors %}
+                    {% for error in form.title.errors %}
                         <span class="form__error">{{ error|escape }}</span>
                     {% endfor %}
                 {% endif %}
@@ -29,13 +29,12 @@
         <div class="form__group">
             <p class="form__label">Теги</p>
             <div class="form__field-group">
-                
                 <div class="tags">
-                    {% for tag_choice, tag_value in form.tags.field.choices %}
+                    {% for tag_choice, tag_value in form.tag.field.choices %}
                         <div class="tags__item">
                             <input 
                                 type="checkbox" 
-                                name="tags" 
+                                name="tag" 
                                 value = "{{ tag_choice.instance.pk }}"
                                 id="id_{{ tag_choice.instance.value }}" 
                                 class="tags__checkbox tags__checkbox_style_{{ tag_choice.instance.style }}">
@@ -43,11 +42,14 @@
                         </div>
                     {% endfor %}
                 </div>
-                <span class="form__error"> {{ form.tags.error }}</span>
+                {% if form.errors %}
+                    {% for error in form.tag.errors %}
+                        <span class="form__error">{{ error|escape }}</span>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
         <div class="form__group">
-            {% csrf_token %}
             <label for="nameIngredient" class="form__label">Ингредиенты</label>
             <div class="form__field-group">
                 <div class="form__field-group-ingredientes">

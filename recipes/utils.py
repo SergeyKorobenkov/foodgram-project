@@ -1,6 +1,8 @@
 from .models import Recipe, Ingrindient, Amount, User, ShopList
 
 
+# скрипт для генерации списка покупок
+
 def generate_shop_list(request):
     shop_list = ShopList.objects.filter(user=request.user).all() # получаем список покупок для юзера
     
@@ -24,8 +26,8 @@ def generate_shop_list(request):
         for obj in item:
             units.append(obj.units)
 
-    counter = 0
-    limit = len(units) - 1
+    counter = 0 # счетчик что бы не уйти в вечный цикл
+    limit = len(units) - 1 # предел счетчика
     total_ings = [] # результирующий список
 
     while counter <= limit: # наполнение результирующего списка
@@ -35,8 +37,32 @@ def generate_shop_list(request):
         total_ings.append(' ')
         total_ings.append(total_ings_dimensions[counter])
         total_ings.append('; ')
-        counter += 1
+        counter += 1 
 
-    return total_ings
+    return total_ings # и отдаем на выгрузку
+
+# Скрипт для генерации списка ингредиентов на передачу в БД
+# при создании/редактировании рецепта
+
+def get_ingrindients(request):
+    ingrindients = {}
+    for key in request.POST:
+        if key.startswith('nameIngredient'):
+            value_ingredient = key[15:]
+            ingrindients[request.POST[key]] = request.POST[
+                'valueIngredient_' + value_ingredient
+            ]
+    return ingrindients
 
 
+def tags_converter(values):
+    tags_id = []
+
+    for value in values:
+        if value == 'breakfast':
+            tags_id.append(1)
+        if value == 'lunch':
+            tags_id.append(2)
+        if value == 'dinner':
+            tags_id.append(3)
+    return tags_id
