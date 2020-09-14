@@ -77,6 +77,7 @@ TEMPLATES = [
                 'recipes.context_processors.shop',
                 'recipes.context_processors.all_tags',
                 'recipes.context_processors.is_favor',
+                'recipes.context_processors.url_parse',
             ],
         },
     },

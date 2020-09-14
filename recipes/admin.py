@@ -8,9 +8,11 @@ class AmountInLine(admin.TabularInline):
     model = Amount
     extra = 1
 
+
 class TagInLine(admin.TabularInline):
     model = Tag
     extra = 1
+
 
 class RecipeAdmin(admin.ModelAdmin):
     def favor_count(self, obj):
@@ -19,7 +21,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     favor_count.short_description = 'Кол-во добавлений в избранное'
 
-    list_display = ('pk','title', 'author', 'pub_date', 'favor_count')
+    list_display = ('pk', 'title', 'author', 'pub_date', 'favor_count')
     search_fields = ('title',)
     list_filter = ('pub_date',)
     inlines = (AmountInLine,)

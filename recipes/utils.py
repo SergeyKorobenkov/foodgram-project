@@ -1,45 +1,34 @@
-from .models import Recipe, Ingrindient, Amount, User, ShopList
+from .models import ShopList
 
 
 # скрипт для генерации списка покупок
 
 def generate_shop_list(request):
-    shop_list = ShopList.objects.filter(user=request.user).all() # получаем список покупок для юзера
-    
-    pre_ings = [] # здесь кверисеты с ингридиентами пользователя
-    total_ings_names = [] # здесь лежат названия ингредиентов 
-    total_ings_dimensions = [] # здесь лежат размерности ингредиентов
-    
-    pre_units = [] # здесь лежат кверисеты модели Amount
-    units = [] # здесь лежит количество ингредиентов по моделям 
+    # получаем список покупок для юзера
+    shop_list = ShopList.objects.filter(user=request.user).all()
+    ingredients_dict = {}
 
-    for item in shop_list: # наполняем кверисетами
-        pre_ings.append(item.recipe.ingrindient.all())
-    for item in pre_ings: # наполняем объектами класса Ingrindient
-        for obj in item:
-            total_ings_names.append(obj.name)
-            total_ings_dimensions.append(obj.dimension)
+    # формируем словарь что бы можно было удобно суммировать повторения
+    for item in shop_list:
+        for amount in item.recipe.amount_set.all():
 
-    for item in shop_list: # наполняем кверисетами
-        pre_units.append(item.recipe.amount_set.all())
-    for item in pre_units: # наполняем количеством ингредиентов
-        for obj in item:
-            units.append(obj.units)
+            name = f'{amount.ingrindient.name} ({amount.ingrindient.dimension})'
+            units = amount.units
 
-    counter = 0 # счетчик что бы не уйти в вечный цикл
-    limit = len(units) - 1 # предел счетчика
-    total_ings = [] # результирующий список
+            # наполняем словарь
+            if name in ingredients_dict.keys():
+                ingredients_dict[name] += units
+            else:
+                ingredients_dict[name] = units
 
-    while counter <= limit: # наполнение результирующего списка
-        total_ings.append(total_ings_names[counter])
-        total_ings.append(' - ')
-        total_ings.append(units[counter])
-        total_ings.append(' ')
-        total_ings.append(total_ings_dimensions[counter])
-        total_ings.append('; ')
-        counter += 1 
+    ingredients_list = []  # список на выгрузку
 
-    return total_ings # и отдаем на выгрузку
+    # формируем из словаря список что бы функция нормально переварила данные
+    for key, units in ingredients_dict.items():
+        ingredients_list.append(f'{key} - {units}, ')
+
+    return ingredients_list  # и отдаем на выгрузку
+
 
 # Скрипт для генерации списка ингредиентов на передачу в БД
 # при создании/редактировании рецепта
