@@ -6,9 +6,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-# скрипт для генерации списка покупок
-
 def generate_shop_list(request):
+    ''' скрипт для генерации списка покупок'''
     # получаем список покупок для юзера
     buyer = get_object_or_404(User, username=request.user.username)
     shop_list = buyer.buyer.all()
@@ -36,10 +35,10 @@ def generate_shop_list(request):
     return ingredients_list  # и отдаем на выгрузку
 
 
-# Скрипт для генерации списка ингредиентов на передачу в БД
-# при создании/редактировании рецепта
-
 def get_ingredients(request):
+    ''' Скрипт для генерации списка ингредиентов на передачу в БД
+    при создании/редактировании рецепта'''
+
     ingredients = {}
     for key in request.POST:
         if key.startswith('nameIngredient'):

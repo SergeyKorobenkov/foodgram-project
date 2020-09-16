@@ -1,8 +1,9 @@
 from .models import Recipe, Tag, Favors, ShopList
 
 
-# длина списка покупок для отображения счетчика
 def counter(request):
+    ''' длина списка покупок для отображения счетчика'''
+    
     if request.user.is_authenticated:
         count = ShopList.objects.filter(user=request.user).all().count()
     else:
@@ -10,8 +11,9 @@ def counter(request):
     return {'count': count}
 
 
-# изменение кнопки добавления в список покупок
 def shop(request):
+    ''' изменение кнопки добавления в список покупок'''
+
     if request.user.is_authenticated:
         # кусок для изменения кнопки добавленности в список покупок
         pre_shop_list = ShopList.objects.filter(user=request.user).all()
@@ -23,14 +25,16 @@ def shop(request):
     return {'shop_list': shop_list}
 
 
-# вывод всех тегов
 def all_tags(request):
+    ''' вывод всех тегов'''
+
     all_tags = Tag.objects.all()
     return {'all_tags': all_tags}
 
 
-# заполнение звездочки
 def is_favor(request):
+    ''' заполнение звездочки'''
+
     if request.user.is_authenticated:
         recipe_list = Recipe.objects.all()
         # нужно что бы заполнить звездочку
@@ -46,8 +50,9 @@ def is_favor(request):
     return {'favor_list': total_favor}
 
 
-# установка фильтров в урл страницы
 def url_parse(request):
+    ''' установка фильтров в урл страницы'''
+
     result_str = ''
     for item in request.GET.getlist('filters'):
         result_str += f'&filters={item}'

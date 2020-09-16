@@ -22,8 +22,6 @@ class Tag(models.Model):
        return self.name
 
 
-# Правильное название должно быть "Ingredient", но когда заметил, было поздно
-# Пусть останется так.
 class Ingredient(models.Model):
     title = models.CharField(
         max_length=100,
