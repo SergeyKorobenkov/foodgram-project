@@ -18,27 +18,25 @@
     </div>
     <div class="card-list">
         {% for item in page %}
-        <div class="card-user" data-author="{{ item.author.id }}">
+        <div class="card-user" data-author="{{ item.id }}">
             <div class="card-user__header">
-                <h2 class="card-user__title"> {{ item.author.first_name }} {{ item.author.last_name }}</h2>
+                <h2 class="card-user__title"> {{ item.first_name }} {{ item.last_name }}</h2>
             </div>
             <div class="card-user__body">
                 <ul class="card-user__items">
-                    {% for fitem in card_page %}
-                        {% for ritem in fitem|slice:":3" %}
-                            {% if ritem.author == item.author %}
-                            <li class="card-user__item">
-                                <div class="recipe">
-                                    <img src="{{ ritem.image.url }}" alt="{{ ritem.name }}" class="recipe__image">
-                                    <h3 class="recipe__title">{{ ritem.title }}</h3>
-                                    <p class="recipe__text"><span class="icon-time"></span> {{ ritem.duration }} мин.</p>
-                                </div>
-                            </li>
-                            {% endif %}
+                        {% for fitem in card_page|slice:":3" %}
+                                {% if item.username == fitem.author.username %}
+                                <li class="card-user__item">
+                                    <div class="recipe">
+                                        <img src="{{ fitem.image.url }}" alt="{{ fitem.name }}" class="recipe__image">
+                                        <h3 class="recipe__title">{{ fitem.title }}</h3>
+                                        <p class="recipe__text"><span class="icon-time"></span> {{ fitem.duration }} мин.</p>
+                                    </div>
+                                </li>
+                                {% endif %}
                         {% endfor %}
-                    {% endfor %}
                     <li class="card-user__item">
-                        <a href="{% url 'recipes:profile' item.author.username %}" class="card-user__link link">Еще...</a>
+                        <a href="{% url 'recipes:profile' item.username %}" class="card-user__link link">Еще...</a>
                     </li>
                 </ul>
             </div>

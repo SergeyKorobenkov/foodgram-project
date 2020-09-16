@@ -45,7 +45,6 @@
         </div>
         
         {% endif %}
-        {% cache 6 index_page %}
     
         <div class="card-list">
             {% for recipe in page %}
@@ -66,22 +65,11 @@
                 </div>
             </div>
             <div class="card__footer">
-                {% if recipe.id in shop_list %}
-                    <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
-                {% else %}
-                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                {% endif %}
-                {% if user.is_authenticated %}
-                    {% if recipe.title in favor_list %}
-                        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-                    {% else %}
-                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                    {% endif %}
-                {% endif %}
+                {% include 'buy_button.html' %}
+                {% include 'favor_button.html' %}
             </div>
         </div>
         {% endfor %}
-    {% endcache %}
     </div>
         {% include 'paginator.html' %}
     </main>

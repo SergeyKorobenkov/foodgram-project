@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Recipe, Tag, Ingrindient, Amount, Follow, Favors, ShopList
+from .models import Recipe, Tag, Ingredient, Amount, Follow, Favors, ShopList
 
 
 class AmountInLine(admin.TabularInline):
@@ -16,8 +16,7 @@ class TagInLine(admin.TabularInline):
 
 class RecipeAdmin(admin.ModelAdmin):
     def favor_count(self, obj):
-        x = Favors.objects.filter(recipe=obj).all()
-        return x.count()
+        return Favors.objects.filter(recipe=obj).count()
 
     favor_count.short_description = 'Кол-во добавлений в избранное'
 
@@ -33,16 +32,16 @@ class TagAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class IngreientAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'dimension')
-    search_fields = ('name',)
-    list_filter = ('name',)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'title', 'dimension')
+    search_fields = ('title',)
+    list_filter = ('title',)
     empty_value_display = '-пусто-'
 
 
 class AmountAdmin(admin.ModelAdmin):
-    fields = ('ingrindient', 'recipe', 'units',)
-    search_fields = ('ingrindient', 'recipe',)
+    fields = ('ingredient', 'recipe', 'units',)
+    search_fields = ('ingredient', 'recipe',)
 
 
 class FollowAdmin(admin.ModelAdmin):
@@ -62,7 +61,7 @@ class ShopListAdmin(admin.ModelAdmin):
 
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)
-admin.site.register(Ingrindient, IngreientAdmin)
+admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Amount, AmountAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Favors, FavoritesAdmin)

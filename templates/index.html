@@ -7,10 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Рецепты</title>
     {% load static %}
-    {% load cache %}
     {% csrf_token %}
     {% load thumbnail %}
-    {% load templates_extra %}
     <link rel="stylesheet" href={% static 'pages/index.css' %}>
 </head>
 <body class="body">
@@ -18,29 +16,26 @@
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Рецепты</h1>
+            {% load templates_extra %}
             <ul class="tags">
-                    {% for tag in all_tags %}
-                        <li class="tags__item">
-                            <a
-                                id="{{ tag.pk }}"
-                                class="tags__checkbox tags__checkbox_style_{{ tag.style }}
-                                {% if tag.value in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
-                                href="/?{{ request|get_filter_link:tag }}"></a>
-                            <span class="tags__label">{{ tag.name }}</span>
-                        </li>
-                    {% endfor %}
+                {% for tag in all_tags %}
+                    <li class="tags__item">
+                        <a
+                            id="{{ tag.pk }}"
+                            class="tags__checkbox tags__checkbox_style_{{ tag.style }}
+                            {% if tag.value in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
+                            href="/?{{ request|get_filter_link:tag }}"></a>
+                        <span class="tags__label">{{ tag.name }}</span>
+                    </li>
+                {% endfor %}
             </ul>
         </div>
-    {% cache 6 index_page %}
-    
         <div class="card-list">
             {% for recipe in page %}
         <div class="card" data-id="{{ recipe.id }}">
             <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
             <div class="card__body">
                 <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
-                
-                
                 <ul class="card__items">
                     {% for tag in recipe.tag.all %}
                     <li class="card__item"><span class="badge badge_style_{{ tag.style }}">{{ tag.name }}</span></li>
@@ -52,24 +47,11 @@
                 </div>
             </div>
             <div class="card__footer">
-                {% if user.is_authenticated %}
-                {% if recipe.id in shop_list %}
-                    <button class="button button_style_light-blue-outline" name="purchpurchases"><span class="icon-check button__icon"></span> Рецепт добавлен</button>
-                {% else %}
-                    <button class="button button_style_light-blue" name="purchpurchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                {% endif %}
-                {% endif %}
-                {% if user.is_authenticated %}
-                    {% if recipe.title in favor_list %}
-                        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-                    {% else %}
-                        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-                    {% endif %}
-                {% endif %}
+                {% include 'buy_button.html' %}
+                {% include 'favor_button.html' %}
             </div>
         </div>
     {% endfor %}
-    {% endcache %}
         
     </div>
     {% include 'paginator.html' %} 

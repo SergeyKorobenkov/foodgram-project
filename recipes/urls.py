@@ -32,7 +32,7 @@ urlpatterns = [
 
     # Блок с ебучим js
     # запрос на урл для автозаполнения поля ингридиентов
-    path('api/ingredients', views.Ingrindients.as_view(), name='ingredients'),
+    path('api/ingredients', views.Ingredients.as_view(), name='ingredients'),
     # запрос по апи для добавления рецепта в избранное
     path('api/favorites', views.Favorites.as_view(), name='add_favor'),
     # удаление рецепта из избранного

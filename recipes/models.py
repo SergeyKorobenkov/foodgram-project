@@ -10,7 +10,7 @@ class Tag(models.Model):
         'Значение',
         max_length=255)
     style = models.CharField(
-        'Префикс для стиля шаблона',
+        'Постфикс для стиля шаблона',
         max_length=255,
         null=True)
     name = models.CharField(
@@ -24,8 +24,8 @@ class Tag(models.Model):
 
 # Правильное название должно быть "Ingredient", но когда заметил, было поздно
 # Пусть останется так.
-class Ingrindient(models.Model):
-    name = models.CharField(
+class Ingredient(models.Model):
+    title = models.CharField(
         max_length=100,
         null=True,
         blank=True)
@@ -35,17 +35,17 @@ class Ingrindient(models.Model):
         blank=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Recipe(models.Model):
     title = models.CharField(
         max_length=100,
         verbose_name='Название рецепта')
-    ingrindient = models.ManyToManyField(
-        Ingrindient,
+    ingredient = models.ManyToManyField(
+        Ingredient,
         through="Amount",
-        through_fields=('recipe', 'ingrindient'))
+        through_fields=('recipe', 'ingredient'))
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -62,17 +62,20 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ['-pub_date']
+
 
 class Amount(models.Model):
     units = models.IntegerField(default=1)
-    ingrindient = models.ForeignKey(
-        Ingrindient,
+    ingredient = models.ForeignKey(
+        Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingrindient')
+        related_name='ingredient')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.ingrindient.dimension
+        return self.ingredient.dimension
 
 
 class Follow(models.Model):

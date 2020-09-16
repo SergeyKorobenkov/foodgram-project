@@ -1,18 +1,24 @@
 from .models import ShopList
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 # скрипт для генерации списка покупок
 
 def generate_shop_list(request):
     # получаем список покупок для юзера
-    shop_list = ShopList.objects.filter(user=request.user).all()
+    buyer = get_object_or_404(User, username=request.user.username)
+    shop_list = buyer.buyer.all()
     ingredients_dict = {}
 
     # формируем словарь что бы можно было удобно суммировать повторения
     for item in shop_list:
         for amount in item.recipe.amount_set.all():
 
-            name = f'{amount.ingrindient.name} ({amount.ingrindient.dimension})'
+            name = f'{amount.ingredient.title} ({amount.ingredient.dimension})'
             units = amount.units
 
             # наполняем словарь
@@ -33,25 +39,12 @@ def generate_shop_list(request):
 # Скрипт для генерации списка ингредиентов на передачу в БД
 # при создании/редактировании рецепта
 
-def get_ingrindients(request):
-    ingrindients = {}
+def get_ingredients(request):
+    ingredients = {}
     for key in request.POST:
         if key.startswith('nameIngredient'):
             value_ingredient = key[15:]
-            ingrindients[request.POST[key]] = request.POST[
+            ingredients[request.POST[key]] = request.POST[
                 'valueIngredient_' + value_ingredient
             ]
-    return ingrindients
-
-
-def tags_converter(values):
-    tags_id = []
-
-    for value in values:
-        if value == 'breakfast':
-            tags_id.append(1)
-        if value == 'lunch':
-            tags_id.append(2)
-        if value == 'dinner':
-            tags_id.append(3)
-    return tags_id
+    return ingredients
