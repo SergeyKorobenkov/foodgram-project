@@ -1,16 +1,13 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Создание рецепта</title>
+{% extends 'base.html' %}
+{% block title%} Добавить рецепт {% endblock%}
+    {% load static %}
+    {% csrf_token %}
         {% load static %}
+        {% block static %}
         <link rel="stylesheet" href={% static 'pages/form.css' %}>
-    </head>
-<body class="body">
-{% include 'header.html' %}
+        {% endblock %}
+{% load user_filters %}
+{% block content %}
 {% load user_filters %}
 <div class="form-container">
     <form class="form" method="post" enctype="multipart/form-data">
@@ -108,11 +105,10 @@
 
 
 </main>
-{% include 'footer.html' %}
 <script src="{% static 'js/config/config.js' %}"></script>
 <script src="{% static 'js/components/Header.js' %}"></script>
 <script src="{% static 'js/utils/debouncing.js' %}"></script>
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'formRecipe.js' %}"></script>
-</body>
-</html>
+
+{% endblock %}

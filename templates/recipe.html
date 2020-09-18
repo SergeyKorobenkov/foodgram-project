@@ -1,17 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ recipe.title }}</title>
+{% extends 'base.html' %}
+{% block title%} {{ recipe.title }} {% endblock%}
     {% load static %}
     {% csrf_token %}
+    {% block static %}
     <link rel="stylesheet" href={% static 'pages/single.css' %}>
-</head>
-<body class="body">
-    {% include 'header.html' %}
+    {% endblock %}
+    {% load templates_extra %}
+    {% block content %}
     <main class="main container">
         <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ profile.id }}">
             <img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="single-card__image"></a>
@@ -67,7 +62,6 @@
             </div>
         </div>
     </main>
-    {% include 'footer.html' %}
     <script src="{% static 'js/config/config.js' %}"></script>
     {% if user.is_authenticated %}
     <script src="{% static 'js/components/Purchpurachases.js' %}"></script>
@@ -90,5 +84,4 @@
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'singlePageNotAuth.js' %}"></script>
     {% endif %}
-</body>
-</html>
+    {% endblock %}

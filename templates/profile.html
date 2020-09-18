@@ -1,20 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Рецепты</title>
+{% extends 'base.html' %}
+{% block title%} Рецепты {% endblock%}
     {% load static %}
-    {% load cache %}
     {% csrf_token %}
-    {% load templates_extra %}
-    {% load thumbnail %}
+    {% block static %}
     <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-</head>
-<body class="body">
-    {% include 'header.html' %}
+    {% endblock %}
+    {% load templates_extra %}
+    {% block content %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">{{ profile.first_name }} {{ profile.last_name }} </h1>
@@ -34,8 +26,9 @@
         </div>
         
         {% if user.username != profile.username %}
-        {% if user.is_authenticated %}
+        
         <div class="author-subscribe" data-author="{{ profile.id }}">
+        {% if user.is_authenticated %}
         {% if subs %}
             <button class="button button_style_light-blue button_size_auto" name="subscribe"><span class="icon-check button__icon"></span>Отписаться от автора </button></p>
         {% else %}
@@ -73,7 +66,6 @@
     </div>
         {% include 'paginator.html' %}
     </main>
-    {% include 'footer.html' %}
     <script src="{% static 'js/config/config.js' %}"></script>
     <script src="{% static 'js/components/MainCards.js' %}"></script>
     <script src="{% static 'js/components/AuthorRecipe.js' %}"></script>
@@ -86,5 +78,5 @@
     <script src="{% static 'js/api/Api.js' %}"></script>
     <script src="{% static 'authorRecipe.js' %}"></script>
     <script src="{% static 'indexAuth.js' %}"></script>
-</body>
-</html>
+
+    {% endblock %}

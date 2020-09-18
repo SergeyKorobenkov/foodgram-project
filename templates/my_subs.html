@@ -1,17 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Мои подписки</title>
+{% extends 'base.html' %}
+{% block title%} Мои подписки {% endblock%}
     {% load static %}
     {% csrf_token %}
+    {% block static %}
     <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
-</head>
-<body class="body">
-{% include 'header.html' %}
+    {% endblock %}
+    {% load templates_extra %}
+    {% block content %}
 <main class="main container">
     <div class="main__header">
         <h1 class="main__title">Мои подписки</h1>
@@ -24,8 +19,7 @@
             </div>
             <div class="card-user__body">
                 <ul class="card-user__items">
-                        {% for fitem in card_page|slice:":3" %}
-                                {% if item.username == fitem.author.username %}
+                        {% for fitem in item.recipe_author.all|slice:":3" %}
                                 <li class="card-user__item">
                                     <div class="recipe">
                                         <img src="{{ fitem.image.url }}" alt="{{ fitem.name }}" class="recipe__image">
@@ -33,7 +27,6 @@
                                         <p class="recipe__text"><span class="icon-time"></span> {{ fitem.duration }} мин.</p>
                                     </div>
                                 </li>
-                                {% endif %}
                         {% endfor %}
                     <li class="card-user__item">
                         <a href="{% url 'recipes:profile' item.username %}" class="card-user__link link">Еще...</a>
@@ -48,7 +41,6 @@
     </div>
     {% include 'paginator.html' %}
 </main>
-{% include 'footer.html' %}
 <script src="{% static 'js/config/config.js' %}"></script>
 <script src="{% static 'js/components/MainCards.js' %}"></script>
 <script src="{% static 'js/components/MyFollow.js' %}"></script>
@@ -57,5 +49,5 @@
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'myFollow.js' %}"></script>
 
-</body>
-</html>
+
+{% endblock %}

@@ -40,7 +40,7 @@ urlpatterns = [
     # запрос на добавление подписки к автору
     path('api/subscriptions', views.Subscription.as_view(), name='add_subs'),
     # запрос на удаление подписки
-    path('api/subscriptions/<int:recipe_id>', views.Subscription.as_view(), name='remove_subs'),
+    path('api/subscriptions/<int:author_id>', views.Subscription.as_view(), name='remove_subs'),
     # добавление в список покупок
     path('api/purchases', views.Purchases.as_view(), name='add_to_shop'),
     # удаление из списка покупок

@@ -14,10 +14,11 @@ from .utils import generate_shop_list, get_ingredients
 
 
 def index(request):
-    ''' Отображение главной страницы'''
+    """Отображение главной страницы"""
 
-    if request.GET.getlist('filters'):
-        tags_values = dict(request.GET)['filters']  # получаем названия тегов
+    tags_values = request.GET.getlist('filters')
+
+    if tags_values:
         recipe_list = Recipe.objects.filter(
             tag__value__in=tags_values).distinct().all()
     else:
@@ -31,17 +32,15 @@ def index(request):
         {'page': page, 'paginator': paginator, })
 
 
-
-
 @login_required
 def new_recipe(request):
-    ''' Создание нового рецепта.'''
+    """Создание нового рецепта."""
 
     if request.method == 'POST':
         form = RecipeForm(request.POST or None, files=request.FILES or None)
         ingredients = get_ingredients(request)
         
-        if not bool(ingredients):
+        if not ingredients:
             form.add_error(None, 'Добавьте ингредиенты')
 
         elif form.is_valid():
@@ -53,7 +52,7 @@ def new_recipe(request):
             for item in ingredients:
                 Amount.objects.create(
                     units=ingredients[item],
-                    ingredient=Ingredient.objects.get(name=f'{item}'),
+                    ingredient=Ingredient.objects.get(title=f'{item}'),
                     recipe=recipe)
 
             form.save_m2m()  # это нужно для нормального заполнения тегами
@@ -66,15 +65,23 @@ def new_recipe(request):
 
 
 class Ingredients(View):
-    ''' Класс для автозаполнения поля ингридиента.
+    """Класс для автозаполнения поля ингридиента.
     Общается по API.js с фронтом и ищет совпадения 
-    введенного текста с базой.'''
+    введенного текста с базой.
+    """
     
     def get(self, request):
         text = request.GET['query']
 
         # Обертка в list() нужна что бы api.js переварил
         # формат ответа
+
+        # оставил так, потому что если делать через 
+        # title__istartswith юзер не сможет получить по запросу
+        # (условно) "фарш" все виды этого фарша 
+        # Или если пользователь не помнит точно как называется 
+        # ингредиент, но помнит какие буквы в нем есть, то это 
+        # запросит все имеющееся в базе
         ingredients = list(Ingredient.objects.filter(
             title__contains=text).values('title', 'dimension'))
 
@@ -85,7 +92,7 @@ class Ingredients(View):
 
 @login_required
 def recipe_edit(request, recipe_id):
-    ''' Изменение рецепта'''
+    """Изменение рецепта"""
 
     recipe = get_object_or_404(Recipe, id=recipe_id)
 
@@ -98,7 +105,7 @@ def recipe_edit(request, recipe_id):
         ingredients = get_ingredients(request)
         if form.is_valid():
             # удаляем все записи об ингредиентах из базы
-            Amount.objects.filter(recipe=recipe).all().delete()
+            Amount.objects.filter(recipe=recipe).delete()
 
             recipe = form.save(commit=False)
             recipe.author = request.user
@@ -121,7 +128,7 @@ def recipe_edit(request, recipe_id):
 
 
 def recipe_view(request, recipe_id, username):
-    ''' Просмотр рецепта'''
+    """Просмотр рецепта"""
 
     recipe = get_object_or_404(Recipe, id=recipe_id)
     profile = get_object_or_404(User, username=username)
@@ -130,7 +137,7 @@ def recipe_view(request, recipe_id, username):
 
         # костыль на меняющуюся кнопку подписки
         is_subs = Follow.objects.filter(
-            user=request.user).filter(author=recipe.author.id)
+            user=request.user, author=recipe.author.id)
 
         return render(request, 'recipe.html',
         {'profile': profile, 'recipe': recipe, 'subs': is_subs, })
@@ -142,7 +149,7 @@ def recipe_view(request, recipe_id, username):
 
 @login_required
 def recipe_delete(request, recipe_id):
-    ''' Удаление рецепта'''
+    """Удаление рецепта"""
 
     recipe = get_object_or_404(Recipe, id=recipe_id)
     if request.user != recipe.author:
@@ -153,12 +160,12 @@ def recipe_delete(request, recipe_id):
 
 
 def profile(request, username):
-    ''' Профиль пользователя'''
+    """Профиль пользователя"""
 
     profile = get_object_or_404(User, username=username)
-
-    if request.GET.getlist('filters'):
-        tags_values = dict(request.GET)['filters']  # получаем названия тегов
+    tags_values = request.GET.getlist('filters')
+    
+    if tags_values:
         recipe_list = Recipe.objects.filter(
             tag__value__in=tags_values, author=profile.pk).all()
 
@@ -174,7 +181,7 @@ def profile(request, username):
 
         # костыль на меняющуюся кнопку подписки
         is_subs = Follow.objects.filter(
-            user=request.user).filter(author=profile.id)
+            user=request.user, author=profile.id)
 
         return render(request, 'profile.html',
             {'profile': profile, 'recipe_list': recipe_list,
@@ -187,72 +194,98 @@ def profile(request, username):
 
 
 class Favorites(View):
-    ''' добавление и удаление рецепта в избранные'''
+    """добавление и удаление рецепта в избранные"""
 
     def post(self, request):
         recipe_id = json.loads(request.body)['id']
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        Favors.objects.get_or_create(
-            user=request.user, recipe=recipe)
-
-        return JsonResponse({'recipe_id': 'recipe'})
+        
+        try:
+            Favors.objects.get_or_create(
+                user=request.user, recipe=recipe)
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
     def delete(self, request, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        Favors.objects.get(
-            user=request.user, recipe=recipe).delete()
-        return JsonResponse({'succes': 'True'})
+        user = get_object_or_404(User, username=request.user.username)
+        obj = get_object_or_404(Favors, user=user, recipe=recipe)
+        try:
+            obj.delete()
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
 
 class Purchases(View):
-    ''' добавление и удаление рецепта в список покупок '''
+    """добавление и удаление рецепта в список покупок """
 
     def post(self, request):
         recipe_id = json.loads(request.body)['id']
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        ShopList.objects.get_or_create(
-            user=request.user, recipe=recipe)
-
-        return JsonResponse({'recipe_id': 'recipe'})
+        
+        try:
+            ShopList.objects.get_or_create(
+                user=request.user, recipe=recipe)
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
     def delete(self, request, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        ShopList.objects.get(
-            user=request.user, recipe=recipe).delete()
-        return JsonResponse({'succes': 'True'})
+        user = get_object_or_404(User, username=request.user.username)
+        obj = get_object_or_404(ShopList, user=user, recipe=recipe)
+        
+        try:
+            obj.delete()
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
 
 class Subscription(View):
-    ''' добавление и удаление профиля в подписки '''
+    """добавление и удаление профиля в подписки """
 
     def post(self, request):
         author_id = json.loads(request.body)['id']
         author = get_object_or_404(User, id=author_id)
-        Follow.objects.get_or_create(
-            user=request.user, author=author_id)
+        
+        try:
+            Follow.objects.get_or_create(
+                user=request.user, author=author)
+            
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
-        return JsonResponse({'succes': 'True'})
-
-    def delete(self, request, recipe_id):
-        # Он все еще шлет переменную под названием recipe_id,
-        # но кладет туда id автора, а не рецепта.
-        # Даже с учетом правок.
-        author = get_object_or_404(User, id=recipe_id)
-        Follow.objects.get(
-            user=request.user, author=author).delete()
-        return JsonResponse({'succes': 'True'})
+    def delete(self, request, author_id):
+        user = get_object_or_404(User, username=request.user.username)
+        author = get_object_or_404(User, id=author_id)
+        obj = get_object_or_404(Follow, user=user, author=author)
+        
+        try:
+            obj.delete()
+            return JsonResponse({'success': True})
+        
+        except:
+            return JsonResponse({'success': False})
 
 
 @login_required
 def favors_view(request, username):
-    ''' Просмотр избранных рецептов'''
+    """Просмотр избранных рецептов"""
 
-    favor_list = Favors.objects.filter(user=request.user).all()
-    recipes_titles = []
-    for item in favor_list:
-        recipes_titles.append(item.recipe.title)
-    if request.GET.getlist('filters'):
-        tags_values = dict(request.GET)['filters']  # получаем названия тегов
+    tags_values = request.GET.getlist('filters')
+    recipes_titles = Favors.objects.filter(
+        user=request.user).values_list('recipe__title', flat=True)
+
+    if tags_values:
         recipe_list = Recipe.objects.filter(
             title__in=recipes_titles, tag__value__in=tags_values).distinct().all()
 
@@ -270,7 +303,7 @@ def favors_view(request, username):
 
 @login_required
 def subs_view(request, username):
-    ''' Просмотр списка подписок'''
+    """Просмотр списка подписок"""
 
     who_user = get_object_or_404(User, username=username)
 
@@ -282,24 +315,20 @@ def subs_view(request, username):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
-    # Блок для передачи списка рецептов для отрисовки в карточках пользователей
-    card_page = Recipe.objects.filter(
-        author__id__in=subs_list).all()
-
     return render(request, 'my_subs.html',
-        {'card_page': card_page, 'page': page, 'paginator': paginator, 'authors':authors_list})
+        {'page': page, 'paginator': paginator, 'authors':authors_list})
 
 
 def shop(request):
-    ''' Просмотр списка покупок'''
+    """Просмотр списка покупок"""
 
     shop_list = ShopList.objects.filter(user=request.user).all()
-    return render(request, 'shopList.html', {'shop_list': shop_list})
+    return render(request, 'shop_list.html', {'shop_list': shop_list})
 
 
 @login_required
 def download(request):
-    ''' скачивание списка покупок'''
+    """скачивание списка покупок"""
     
     result = generate_shop_list(request)  # вызов скрипта на составление файла
     filename = 'ingredients.txt'  # именуем файл

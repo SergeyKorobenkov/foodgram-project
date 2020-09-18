@@ -1,18 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Избранное</title>
+{% extends 'base.html' %}
+{% block title%} Избранное {% endblock%}
     {% load static %}
     {% csrf_token %}
+    {% block static %}
+    <link rel="stylesheet" href={% static 'pages/index.css' %}>
+    {% endblock %}
     {% load templates_extra %}
-    <link rel="stylesheet" href="{% static 'pages/index.css' %}">
-</head>
-<body class="body">
-    {% include 'header.html' %}
+    {% block content %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">Избранное</h1>
@@ -31,30 +25,11 @@
         </div>
         <div class="card-list">
             {% for recipe in page %}
-        <div class="card" data-id="{{ recipe.id }}">
-            <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
-            <div class="card__body">
-                <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
-                <ul class="card__items">
-                    {% for tag in recipe.tag.all %}
-                    <li class="card__item"><span class="badge badge_style_{{ tag.style }}">{{ tag.name }}</span></li>
-                    {% endfor %}
-                </ul>
-                <div class="card__items card__items_column">
-                    <p class="card__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
-                    <p class="card__text"><span class="icon-user"></span> <a href="{% url 'recipes:profile' recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a></p>
-                </div>
-            </div>
-            <div class="card__footer">
-                {% include 'buy_button.html' %}
-                {% include 'favor_button.html' %}
-            </div>
-        </div>
+        {% include 'recipe_item.html' %}
     {% endfor %}
         </div>
         {% include 'paginator.html' %}
     </main>
-    {% include 'footer.html' %}
 <script src="{% static 'js/config/config.js' %}"></script>
 <script src="{% static 'js/components/MainCards.js' %}"></script>
 
@@ -66,5 +41,4 @@
   
 <script src="{% static 'js/api/Api.js' %}"></script>
 <script src="{% static 'favorite.js' %}"></script>
-</body>
-</html>
+{% endblock %}

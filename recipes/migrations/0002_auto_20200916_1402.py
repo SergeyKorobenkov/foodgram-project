@@ -6,13 +6,10 @@ import csv
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 def get_ingredients(apps, schema_editor):
     Ingredient = apps.get_model('recipes', 'Ingredient')
     
-    csv_file=os.path.join(BASE_DIR, 'ingredients.csv')
+    csv_file=os.path.join('ingredients.csv')
     data = csv.reader(open(csv_file, encoding='utf-8'), delimiter = ',')
     try:
         obj_list = [
@@ -37,7 +34,7 @@ def delete_ingredients(apps, schema_editor):
 def get_tags(apps, schema_editor):
     Tag = apps.get_model('recipes', 'Tag')
     
-    csv_file=os.path.join(BASE_DIR, 'tags.csv')
+    csv_file=os.path.join('tags.csv')
     data = csv.reader(open(csv_file, encoding='utf-8'), delimiter = ',')
     try:
         obj_list = [

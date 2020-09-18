@@ -1,0 +1,19 @@
+<div class="card" data-id="{{ recipe.id }}">
+    <a href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" class="link" target="_blank"><img src="{{ recipe.image.url }}" alt="{{ recipe.name }}" class="card__image"></a>
+    <div class="card__body">
+        <a class="card__title link" href="{% url 'recipes:recipe_view' recipe.author.username recipe.id %}" target="_blank"> {{ recipe.title }}</a>
+        <ul class="card__items">
+            {% for tag in recipe.tag.all %}
+            <li class="card__item"><span class="badge badge_style_{{ tag.style }}">{{ tag.name }}</span></li>
+            {% endfor %}
+        </ul>
+        <div class="card__items card__items_column">
+            <p class="card__text"><span class="icon-time"></span> {{ recipe.duration }} мин.</p>
+            <p class="card__text"><span class="icon-user"></span> <a href="{% url 'recipes:profile' recipe.author.username %}" style="color: black">{{ recipe.author.first_name }} {{ recipe.author.last_name }}</a></p>
+        </div>
+    </div>
+    <div class="card__footer">
+        {% include 'buy_button.html' %}
+        {% include 'favor_button.html' %}
+    </div>
+</div>

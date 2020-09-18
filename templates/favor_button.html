@@ -1,7 +1,9 @@
+{% load templates_extra %}
+
 {% if user.is_authenticated %}
-{% if recipe.title in favor_list %}
-    <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-{% else %}
-    <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-{% endif %}
+    {% if recipe|favor_filter:user %}
+        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+    {% else %}
+        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+    {% endif %}
 {% endif %}

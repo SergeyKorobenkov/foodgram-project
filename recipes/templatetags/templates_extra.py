@@ -1,6 +1,6 @@
 from django import template
 from django.http import QueryDict
-
+from recipes.models import Recipe, Tag, Favors, ShopList, Follow
 
 register = template.Library()
 
@@ -20,3 +20,13 @@ def get_filter_link(request, tag):
         new_request.appendlist('filters', tag.value)
     
     return new_request.urlencode()
+
+
+@register.filter(name='favor_filter')
+def favor_filter(recipe, user):
+    return Favors.objects.filter(user=user, recipe=recipe).exists()
+
+
+@register.filter(name='shop_filter')
+def shop_filter(recipe, user):
+    return ShopList.objects.filter(user=user, recipe=recipe).exists()
