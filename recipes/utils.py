@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 def generate_shop_list(request):
-    ''' скрипт для генерации списка покупок'''
+    """ Скрипт для генерации списка покупок."""
     # получаем список покупок для юзера
     buyer = get_object_or_404(User, username=request.user.username)
     shop_list = buyer.buyer.all()
@@ -36,8 +36,8 @@ def generate_shop_list(request):
 
 
 def get_ingredients(request):
-    ''' Скрипт для генерации списка ингредиентов на передачу в БД
-    при создании/редактировании рецепта'''
+    """ Скрипт для генерации списка ингредиентов на передачу в БД
+    при создании/редактировании рецепта."""
 
     ingredients = {}
     for key in request.POST:

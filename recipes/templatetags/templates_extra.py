@@ -22,11 +22,16 @@ def get_filter_link(request, tag):
     return new_request.urlencode()
 
 
-@register.filter(name='favor_filter')
-def favor_filter(recipe, user):
+@register.filter(name='is_favorite')
+def is_favorite(recipe, user):
     return Favors.objects.filter(user=user, recipe=recipe).exists()
 
 
-@register.filter(name='shop_filter')
-def shop_filter(recipe, user):
+@register.filter(name='is_shop')
+def is_shop(recipe, user):
     return ShopList.objects.filter(user=user, recipe=recipe).exists()
+
+
+@register.filter(name='is_follow')
+def is_follow(author, user):
+    return Follow.objects.filter(user=user, author=author).exists()

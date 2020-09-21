@@ -39,7 +39,7 @@
                     {% include 'buy_button.html' %}
                     {% if user.username != profile.username %}
                     {% if user.is_authenticated %}
-                        {% if subs %}
+                        {% if recipe.author|is_follow:user %}
                         <li class="single-card__item"><button class="button button_style_light-blue button_size_auto" name="subscribe"><span class="icon-check button__icon"></span> Отписаться от автора </button>
                         {% else %}
                         <li class="single-card__item"><button class="button button_style_light-blue button_size_auto" name="subscribe" data-out>Подписаться на автора</button></li>
