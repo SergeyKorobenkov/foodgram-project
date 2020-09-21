@@ -2,6 +2,7 @@
 {% block title%} Мои подписки {% endblock%}
     {% load static %}
     {% csrf_token %}
+    {% block subs %} <li class="nav__item nav__item_active"> {% endblock %}
     {% block static %}
     <link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
     {% endblock %}
@@ -15,11 +16,11 @@
         {% for item in page %}
         <div class="card-user" data-author="{{ item.id }}">
             <div class="card-user__header">
-                <h2 class="card-user__title"> {{ item.first_name }} {{ item.last_name }}</h2>
+                <h2 class="card-user__title"> {{ item.author.first_name }} {{ item.author.last_name }}</h2>
             </div>
             <div class="card-user__body">
                 <ul class="card-user__items">
-                        {% for fitem in item.recipe_author.all|slice:":3" %}
+                        {% for fitem in item.author.recipe_author.all|slice:":3" %}
                                 <li class="card-user__item">
                                     <div class="recipe">
                                         <img src="{{ fitem.image.url }}" alt="{{ fitem.name }}" class="recipe__image">
@@ -29,7 +30,7 @@
                                 </li>
                         {% endfor %}
                     <li class="card-user__item">
-                        <a href="{% url 'recipes:profile' item.username %}" class="card-user__link link">Еще...</a>
+                        <a href="#" class="card-user__link link">Еще...</a>
                     </li>
                 </ul>
             </div>

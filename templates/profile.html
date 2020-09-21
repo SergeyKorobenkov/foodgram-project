@@ -17,7 +17,7 @@
                                 id="{{ tag.pk }}"
                                 class="tags__checkbox tags__checkbox_style_{{ tag.style }}
                                 {% if tag.value in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
-                                href="/recipe/{{profile.username}}/?{{ request|get_filter_link:tag }}"></a>
+                                href="{% url 'recipes:profile' profile.username %}?{{ request|get_filter_link:tag }}"></a>
                             <span class="tags__label">{{ tag.name }}</span>
                         </li>
                     {% endfor %}

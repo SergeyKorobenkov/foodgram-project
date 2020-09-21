@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title%} Избранное {% endblock%}
     {% load static %}
+    {% block favorites %} <li class="nav__item nav__item_active"> {% endblock %}
     {% csrf_token %}
     {% block static %}
     <link rel="stylesheet" href={% static 'pages/index.css' %}>
@@ -17,7 +18,7 @@
                                 id="{{ tag.pk }}"
                                 class="tags__checkbox tags__checkbox_style_{{ tag.style }}
                                 {% if tag.value in request.GET|get_filter_values %} tags__checkbox_active {% endif %}"
-                                href="/favors/{{request.user.username}}/?{{ request|get_filter_link:tag }}"></a>
+                                href="{% url 'recipes:favors' request.user.username %}?{{ request|get_filter_link:tag }}"></a>
                             <span class="tags__label">{{ tag.name }}</span>
                         </li>
                     {% endfor %}
