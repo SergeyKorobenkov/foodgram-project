@@ -269,3 +269,11 @@ def download(request):
     response = HttpResponse(result, content_type='text/plain')
     response['Content-Disposition'] = 'attachment; filename={0}'.format(filename)
     return response
+
+
+def page_not_found(request, exception):
+    return render(request, "404.html", {"path": request.path}, status=404)
+    
+    
+def server_error(request):
+    return render(request, "500.html", status=500)
