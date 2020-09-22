@@ -37,22 +37,28 @@
 1. Скопировать код проекта к себе на компьютер.
 
 2. Установить виртуальное окружение командой:
+    
     python -m venv venv
 
 3. Активировать виртуальное окружение командой:
+    
     source venv/Scripts/activate
 
 4. Установить необходимые зависимости командой:
+    
     pip install -r requirements.txt
 
 5. Сделать миграции для формирования базы данных:
+    
     python manage.py migrate
 
 6. При необходимости создать суперпользователя:
+    
     python manage.py createsuperuser
     (и следовать подсказкам в консоли)
 
 7. Запустить проект командой:
+    
     python manage.py runserver
 
 8. Перейти в браузере по адресу http://127.0.0.1:8000/
@@ -65,7 +71,9 @@
 1. Склонируйте репозиторий себе на компьютер.
 
 2. Выполните команду:
+    
     docker-compose up 
+    
     (у вас же есть докер, правда? Если нет, его можно найти тут:
     [Docker](https://docs.docker.com/engine/install/),
     [docker-compose](https://docs.docker.com/compose/install/).
@@ -77,7 +85,9 @@
 контейнеры запустятся без ошибок.
 
 4. Выполнить миграции и собрать статику, выполнив команды:
+    
     docker-compose exec web python manage.py migrate
+    
     docker-compose exec web python manage.py collectstatic
 
 5. Бинго, если вам повезло, проект запустится у вас на компьютере и 
