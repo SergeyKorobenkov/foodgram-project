@@ -85,11 +85,10 @@
 контейнеры запустятся без ошибок.
 
 4. Выполнить миграции и собрать статику, выполнив команды:
-    
-    ```docker-compose exec web python manage.py migrate
-    
-    docker-compose exec web python manage.py collectstatic```
-
+    ```
+    docker-compose exec web python manage.py migrate
+    docker-compose exec web python manage.py collectstatic
+    ```
 5. Бинго, если вам повезло, проект запустится у вас на компьютере и 
 будет доступен в любом браузере по ссылке http://localhost/ !
 
