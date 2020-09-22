@@ -1,0 +1,33 @@
+version: '3.8'
+
+volumes:
+  postgres_data:
+
+services:
+  db:
+    image: library/postgres:12.4
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+  web:
+    build: .
+    restart: always
+    command: gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000 --access-logfile -
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+    volumes:
+      - ./static:/code/static
+      - ./media:/code/media
+  nginx:
+    image: library/nginx:1.19.2
+    depends_on:
+      - web
+    ports:
+      - 80:80
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./static:/var/www/foodgram/static
+      - ./media:/var/www/foodgram/media
